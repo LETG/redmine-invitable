@@ -8,7 +8,11 @@ module Invitable
       @user = user
       @password = password
       if is_new_member
-        @login_url = url_for(:controller => 'my', :action => 'account')
+        #@login_url = url_for(:controller => 'my', :action => 'account')
+        @password = ""
+	@login_url = "https://www-iuem.univ-brest.fr/pops"
+	@project_name = project_name
+	@inviter = inviter
         mail :to => user.mail,
         :subject => "Invitation au projet #{project_name} par #{inviter}"
       else

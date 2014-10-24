@@ -13,6 +13,8 @@ module MembersControllerPatch
               u = User.new(mail: params[:email], firstname: "tbd", lastname: "tbd", :language => current_language.to_s)
               u.login = params[:email]
               u.password = password
+              u.firstname = params[:firstname] if params[:firstname]
+              u.lastname = params[:lastname] if params[:lastname]
               if u.save
                 invite = true
                 params[:membership][:user_ids].blank? ? (params[:membership][:user_ids] = [u.id]) : params[:membership][:user_ids] << u.id
