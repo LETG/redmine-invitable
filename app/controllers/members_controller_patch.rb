@@ -3,7 +3,6 @@ module MembersControllerPatch
     base.class_eval do
 
       def create
-        byebug
         members = []
         invite = false
 
@@ -16,6 +15,7 @@ module MembersControllerPatch
               u.password = password
               u.firstname = params[:firstname] if params[:firstname]
               u.lastname = params[:lastname] if params[:lastname]
+
               if u.save
                 invite = true
                 params[:membership][:user_ids].blank? ? (params[:membership][:user_ids] = [u.id]) : params[:membership][:user_ids] << u.id
@@ -26,6 +26,7 @@ module MembersControllerPatch
             #   flash[:error] = l(:notice_existing_user)
             end
           end
+
           if params[:membership][:user_ids]
             attrs = params[:membership].dup
             user_ids = attrs.delete(:user_ids)
@@ -34,11 +35,12 @@ module MembersControllerPatch
               members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => user_id)
               Mailer.account_information(user, "", true, @project.name, User.current.name).deliver
             end
-          else
+          elsif params[:membership][:user_id]
             user = User.find(params[:membership][:user_id])
             members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => params[:membership][:user_id])
             Mailer.account_information(user, "", true, @project.name, User.current.name).deliver
           end
+
           @project.members << members
         end
 
