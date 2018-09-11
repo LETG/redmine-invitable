@@ -19,7 +19,7 @@ module MembersControllerPatch
               if u.save
                 invite = true
                 params[:membership][:user_ids].blank? ? (params[:membership][:user_ids] = [u.id]) : params[:membership][:user_ids] << u.id
-                Mailer.account_information(u, password, true, @project.name, User.current.name).deliver
+                Mailer.account_information(u, password, true, @project.name, User.current.name, @project).deliver
                 flash[:notice] = l(:notice_email_sent, params[:email])
               end
             # elsif !User.where(mail: params[:email]).empty?
@@ -33,12 +33,12 @@ module MembersControllerPatch
             user_ids.each do |user_id|
               user = User.find(user_id)
               members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => user_id)
-              Mailer.account_information(user, "", true, @project.name, User.current.name).deliver
+              Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
             end
           elsif params[:membership][:user_id]
             user = User.find(params[:membership][:user_id])
             members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => params[:membership][:user_id])
-            Mailer.account_information(user, "", true, @project.name, User.current.name).deliver
+            Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
           end
 
           @project.members << members

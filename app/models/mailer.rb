@@ -3,7 +3,7 @@ module Invitable
   extend ActiveSupport::Concern
   included do
 
-    def account_information(user, password, is_new_member = false, project_name = nil, inviter = nil)
+    def account_information(user, password, is_new_member = false, project_name = nil, inviter = nil, project = nil)
       set_language_if_valid user.language
       @user = user
       @password = password
@@ -11,8 +11,14 @@ module Invitable
       if is_new_member
         #@login_url = url_for(:controller => 'my', :action => 'account')
         @password = ""
-	      @login_url = "https://www-iuem.univ-brest.fr/pops"
-	      @project_name = project_name
+
+        if project
+          @login_url = "https://www-iuem.univ-brest.fr/pops/projects/#{project.identifier}"
+        else
+	       @login_url = "https://www-iuem.univ-brest.fr/pops"
+        end
+	      
+        @project_name = project_name
 	      @inviter = inviter
 
         mail :to => user.mail,
