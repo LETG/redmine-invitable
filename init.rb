@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'app/controllers/users_controller_patch')
 require File.join(File.dirname(__FILE__), 'app/controllers/members_controller_patch')
-require File.join(File.dirname(__FILE__), 'app/models/mailer')
+require File.join(File.dirname(__FILE__), 'app/models/invitable')
 require "redmine"
 
 Redmine::Plugin.register :invitable do
