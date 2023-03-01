@@ -27,21 +27,21 @@ module MembersControllerPatch
             end
           end
 
-          if params[:membership][:user_ids]
-            attrs = params[:membership].dup
-            user_ids = attrs.delete(:user_ids)
+          members = []
+
+          if params[:membership]
+            user_ids = Array.wrap(params[:membership][:user_id] || params[:membership][:user_ids])
+            user_ids << nil if user_ids.empty?
+
             user_ids.each do |user_id|
-              user = User.find(user_id)
-              members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => user_id)
-              Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
+              member = Member.new(:project => @project, :user_id => user_id)
+              member.set_editable_role_ids(params[:membership][:role_ids])
+              members << member
             end
-          elsif params[:membership][:user_id]
-            user = User.find(params[:membership][:user_id])
-            members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => params[:membership][:user_id])
+
+            @project.members << members
             Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
           end
-
-          @project.members << members
         end
 
         respond_to do |format|
