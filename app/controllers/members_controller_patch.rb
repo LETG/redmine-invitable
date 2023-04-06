@@ -37,10 +37,12 @@ module MembersControllerPatch
               member = Member.new(:project => @project, :user_id => user_id)
               member.set_editable_role_ids(params[:membership][:role_ids])
               members << member
+
+              user = User.find(user_id)
+              Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
             end
 
             @project.members << members
-            Mailer.account_information(user, "", true, @project.name, User.current.name, @project).deliver
           end
         end
 
